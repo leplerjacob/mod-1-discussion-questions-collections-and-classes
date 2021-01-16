@@ -1,8 +1,31 @@
 # Finish the implementation of the Car class so it has the functionality described below
-
+require 'pry'
 class Car
 
+    attr_reader :make, :model
 
+    @@all_cars = []
+
+    
+    def initialize(*args)
+        if args.class == Hash
+            @make = args[0][:make]
+            @model = args[0][:model]
+        else
+            @make = args[0]
+            @model = args[1]
+        end
+        # binding.pry
+        @@all_cars << args
+    end
+
+    def self.drive
+        "VROOOOOOOOOOOOM!"
+    end
+
+    def self.all
+        @all_cars
+    end
 
 end
 
@@ -21,7 +44,7 @@ Car.drive
 Car.all
 #=> [#<Car:0x00007fae28930f20>, #<Car:0x00007fae28923370>, #<Car:0x00007fae2891ae78>]
 
-BONUS:
+# BONUS:
 
 volvo_lightning = Car.new(make: "Volvo", model: "Lightning")
 
