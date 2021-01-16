@@ -11,46 +11,68 @@ class User
     end
 
     def photos
+        @photos << Photo.all_photos.select do |photo|
+            photo.user == self
+        end
         @photos
-    end
-
-    def add_photos(photo)
-        @photos.push(photo)
     end
 
 end
 
 class Photo
 
+    @@photos = []
+    
+    def initialize
+        @@photos.push(self)
+        @comments = []
+    end
+
     def user=(owner)
-        owner.add_photos(self)
         @user = owner
     end
     
     def user
         @user
     end
+
+    def self.all_photos
+        @@photos
+    end
+
+    def comments
+        Comment.all.select do |comment|
+            self == comment.photo
+        end
+    end
+
+    def make_comment(text)
+        Comment.new(text, self)
+    end
     
+end
+
+class Comment
+    attr_reader :photo
+
+    @@all_comments = []
+    def initialize(comment, photo)
+        @@all_comments << self
+        @comment = comment
+        @photo = photo
+    end
+
+    def self.all
+        @@all_comments
+    end
 end
 
 puts "DONE: ", sandwich_photo = Photo.new
 puts "DONE: ", sophie = User.new('Sophie')
 puts "DONE: ", sandwich_photo.user = sophie
 puts "DONE: ", sandwich_photo.user.name 
-
-puts "NOT DONE"
-
-# binding.pry
-puts "Photos: ", sophie.photos
-# => [#<Photo:0x00007fae2880b370>]
-
-binding.pry
-p sandwich_photo.comments
-# => []
-
-p sandwich_photo.make_comment("this is such a beautiful photo of your lunch!! I love photos of other people's lunch")
-p sandwich_photo.comments
-# => [#<Comment:0x00007fae28043700>]
-
-# p Comment.all
-#=> [#<Comment:0x00007fae28043700>]
+puts "DONE: ", sophie.photos
+puts "DONE: ", sandwich_photo.comments
+puts "DONE: ", sandwich_photo.make_comment("this is such a beautiful photo of your lunch!! I love photos of other people's lunch")
+puts "DONE: ", sandwich_photo.comments
+puts "DONE: ",  Comment.all
